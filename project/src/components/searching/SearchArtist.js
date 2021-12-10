@@ -21,7 +21,6 @@ function searchArtist(props, video, song, event) {
                     return;
                 });            
         })
-
         let response = innerP.then((found) => {
             const data = found.data.tracks.hits;
             const result = data.map((item) => {
@@ -32,11 +31,6 @@ function searchArtist(props, video, song, event) {
             })
             return result; // searchResults = {artist}
         })
-        // }).catch((error) => {
-        //     console.log('Shazam error 429!');
-        //     return error;
-        // });
-
         resolve(response);
     });
 
