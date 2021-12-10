@@ -6,11 +6,11 @@ import updateList from "./list/UpdateList.js";
 import FavButton from "./list/FavButton.js";
 import Player from "./Player.js";
 import SelectList from "./list/SelectList.js";
-import HandleInput from "./HandleInput.js";
+import HandleInput from "./searching/HandleInput"
+import RelatedVideos from "./searching/RelatedVideo";
 import Main from "./routing/Main.js";
-
-import Search from './Search-aaa';
 import MainScreen from './MainScreen';
+import DarkMode from "./DarkMode";
 
 class SearchScreen extends React.Component {
     constructor() {
@@ -20,14 +20,23 @@ class SearchScreen extends React.Component {
         this.selectListState = this.selectListState.bind(this);
         this.handleInputState = this.handleInputState.bind(this);
         this.searchState = this.searchState.bind(this);
+        this.searchRVidsState = this.searchRVidsState.bind(this);
+        this.selectRVidsState = this.selectRVidsState.bind(this);
+        this.artistResultsState = this.artistResultsState.bind(this);
+
         this.state = {
-            input: "", // input from searchbar
-            searchResults: [], // an array of 20 results from searching. Includes title and videoId
+            inputSong: "", // input from song searchbar
+            inputArtist: "", // input from artist searchbar
+            searchResults: [], // an array of results from searching songs. Includes title and videoId
+            artistResults: [], // an array of suggested artists from searching songs
             searchIndex: 0, // index number for searchResult array
             searchTitle: "", // title of selected song
             searchURL: "", // videoId of selected song
+            searchArtist: "", // artist of selected song
+            searchVTitle: "",
             favourites: [], // array of favourited items that is synced up to Windows.localStorage("favourites")
             history: [], // array of history items that is synced up to Windows.localStorage("history")
+            relatedVids: [], // array of videos related to search result
         }
     }
 
@@ -60,6 +69,8 @@ class SearchScreen extends React.Component {
             searchIndex,
             searchTitle: this.state.searchResults[searchIndex].title,
             searchURL: this.state.searchResults[searchIndex].url,
+            searchArtist: this.state.searchResults[searchIndex].artist,
+            searchVTitle: this.state.searchResults[searchIndex].vtitle,
         })
     }
 
@@ -68,51 +79,93 @@ class SearchScreen extends React.Component {
         this.setState({
             ...this.state,
             searchTitle: video.title,
+            searchVTitle: video.vtitle,
             searchURL: video.url,
+            searchArtist: video.artist,
             searchIndex: 0, // reset searchIndex
+            searchResults: this.state.relatedVids,
         })
     }
 
     // updating input after typing in searchbar
-    handleInputState(input) { // passing in event.target.value
-        this.setState({ input });
+    handleInputState(output) { // passing in event.target.value
+        if (output.target === "suggsong") {
+            this.setState({ inputSong: output.result })
+            document.getElementById("suggartist").disabled = false;
+        } else {
+            this.setState({ inputArtist: output.result });
+            document.getElementById("searchbutton").disabled = false; // enable search button when searchbar is not empty
+        }
     }
 
-    // setting states after returning search results
+    // execute after returning search results
     searchState(searchResults) { // passing in searchResults object {title, url}
         this.setState({
             ...this.state,
-            input: "",
+            artistSearch: [],
             searchResults,
-            searchTitle: searchResults[this.state.searchIndex].title, // setting this.state.searchTitle and searchURL based on searchResults[searchIndex = 0]
+            searchTitle: searchResults[this.state.searchIndex].title, // setting this.state.searchTitle, searchVTitle and searchURL based on searchResults[searchIndex = 0]
+            searchVTitle: searchResults[this.state.searchIndex].vtitle,
             searchURL: searchResults[this.state.searchIndex].url,
+            searchArtist: searchResults[this.state.searchIndex].artist,
         })
     }
 
+    // execute after finding related videos to search result
+    searchRVidsState(relatedVids) { // passing in searchResults object {title, url, thumbnailurl}
+        this.setState({ relatedVids })
+    }
+
+    // execute after selecting related video to play
+    selectRVidsState(video, res) {
+        this.setState({
+            ...this.state,
+            searchTitle: res[0].title,
+            searchVTitle: video.vtitle,
+            searchURL: video.url,
+            searchArtist: res[0].artist,
+        })
+    }
+
+    // get an array of suggested artists based on song name in search
+    artistResultsState(artistResults) {
+        this.setState({ artistResults });
+    }
+
     render() {
-        const { input } = this.state;
+        const { inputSong } = this.state;
+        const { inputArtist } = this.state;
+        const { artistResults } = this.state;
         const { searchTitle } = this.state;
+        const { searchVTitle } = this.state;
         const { searchURL } = this.state;
+        const { searchArtist } = this.state;
         const { searchIndex } = this.state;
         const { favourites } = this.state;
         const { history } = this.state;
+        const { relatedVids } = this.state;
 
         return (
-            <div className="webpage">
-                <h1 id="header">The Karaoke Website</h1>
+            <div id="mainbody" className="webpage">
                 <div className="topnavbar">
                     {/* Search Bar Input */}
                     <HandleInput
-                        input={input}
+                        inputSong={inputSong}
+                        inputArtist={inputArtist}
+                        artistResults={artistResults}
                         handleInputState={this.handleInputState}
                         searchState={this.searchState}
+                        searchRVidsState={this.searchRVidsState}
+                        artistResultsState={this.artistResultsState}
                     />
                     {/* Favourites and History Dropdown Lists */}
                     <SelectList
                         selectListState={this.selectListState}
+                        searchRVidsState={this.searchRVidsState}
                         favourites={favourites}
                         history={history}
                     />
+                    <DarkMode />
                 </div>
                 <div className="searchscreen">
                     <div className="playerbox">
@@ -121,39 +174,48 @@ class SearchScreen extends React.Component {
                             <Player
                                 list={history}
                                 title={searchTitle}
+                                vtitle={searchVTitle}
                                 url={searchURL}
+                                artist={searchArtist}
                                 addListState={this.addListState}
                             />
-                            <h3>{searchTitle}</h3>
                         </div>
                         <div className="vidnavbar">
                             {/* Previous and Next Buttons */}
                             <PrevNext
                                 prevNextState={this.prevNextState}
-                                index={searchIndex}
+                                index={searchIndex} array={this.state.searchResults}
                             />
+                            {/* <PrevNext
+                                prevNextState={this.prevNextState}
+                                index={searchIndex}
+                            /> */}
                             {/* Add to Favourites Button */}
                             <FavButton
                                 list={favourites}
                                 title={searchTitle}
+                                vtitle={searchVTitle}
                                 url={searchURL}
+                                artist={searchArtist}
                                 addListState={this.addListState}
                             />
-                            <div>
-                                <select className="ttsconfig"></select>
-                                <button className="tts">Activate Text-to-Speech</button>
-                                {/* This is for G1's Text-to-Speech */}
-                            </div>
+                            {/* <button className="lyricbutton">Display Lyrics</button> */}
+                        </div>
+                        <div>
+                            <h3 className="videoinfo" id="videotitle">{searchVTitle}</h3>
+                            <h3 className="videoinfo" id="videoartist">{searchArtist}</h3>
                         </div>
                     </div>
-                    <div className="lyricbox">
-                        <p>This is for Aunt Pyone's lyrics</p>
-                        <Search />
-                        <MainScreen />
-                    </div>
-                    <div className="relatedvids">
-                        <p>This is for related videos</p>
-                    </div>
+                    <MainScreen
+                        inputArtist={searchArtist}
+                        inputSong={searchTitle}
+                    />
+                    <RelatedVideos
+                        rvideos={relatedVids}
+                        artistResults={artistResults}
+                        selectRVidsState={this.selectRVidsState}
+                        artistResultsState={this.artistResultsState}
+                    />
                 </div>
             </div>
         )

@@ -1,45 +1,162 @@
 .webpage {
-    display: flex;
-    flex-flow: column wrap;
-    align-items: center;
-    row-gap: 5vh;
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+#wholebody {
+  display: flex;
+  flex-flow: column wrap;
+}
+
+/* g1 */
+.day {
+  background-color: white;
+  color: black;
+}
+
+.night {
+  background-color: rgba(26, 26, 26);
+  color: white;
+}
+
+.xmas {
+  background-color: black;
+  color: white;
 }
 
 #header {
-    text-align: center;
-    margin-bottom: 0%;
+  text-align: center;
+  margin-bottom: 0%;
 }
 
 .searchscreen {
-    display: flex;
-    column-gap: 5vw;
+  display: flex;
+  flex-flow: row wrap;
+  column-gap: 2vw;
+  justify-content: center;
 }
 
 .playerbox {
-    display: flex;
-    flex-flow: column wrap;
-    margin: auto;
-    row-gap: 5vh;
+  display: flex;
+  flex-flow: column wrap;
+  row-gap: 2vh;
 }
 
-.topnavbar {
-    display: flex;
-}
-
-.vidnavbar {
-    display: flex;
-}
-
-.lyricbox {
-    width: 500px;
-    height: 500px;
-    background-color: rgb(238, 238, 175);
-    margin: auto;
+.videoinfo {
+  font-weight: lighter;
 }
 
 .relatedvids {
-    width: 300px;
-    height: 500px;
-    background-color: rgb(165, 165, 221);
-    margin: auto;
+  display: flex;
+  flex-flow: column;
+  width: 15vw;
+  height: 67vh;
+  margin: 0;
+  overflow: scroll;
+  align-items: center;
+}
+
+.lyricbox {
+  width: 27vw;
+}
+
+.topnavbar {
+  display: flex;
+  flex-flow: row wrap;
+  column-gap: 1vw;
+  margin: 4vh 0;
+}
+
+.dropdown {
+  width: 200px;
+  height: 40px;
+  font-size: 17px;
+  text-align: center;
+  margin: 0 1vw;
+  border: 1px solid black;
+  border-radius: 5px;
+}
+
+#inputsong {
+  width: 200px;
+  height: 33px;
+  font-size: 17px;
+  text-align: center;
+  margin: 0 1vw;
+  border: 1px solid black;
+  border-radius: 5px;
+}
+
+.button {
+  background: rgb(255, 255, 255);
+  height: 30px;
+  border: 1px solid black;
+  width: fit-content;
+  padding: 0 10px;
+  border-radius: 5px;
+  font-size: 17px;
+}
+
+.button:hover {
+  cursor: pointer;
+}
+
+.dropdown:hover {
+  cursor: pointer;
+}
+
+.rvid:hover {
+  cursor: pointer;
+}
+
+#lang {
+  height: 30px;
+  border: 1px solid black;
+  border-radius: 5px;
+  font-size: 17px;
+  padding: 0 10px;
+  text-align: center;
+}
+
+.vidnavbar {
+  display: flex;
+  column-gap: 1vw;;
+}
+
+.rvidthumbnail {
+  width: 250px;
+  height: 180px;
+}
+
+.rvidtitle {
+  font-size: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 250px;
+}
+
+/* .displayWindow2:hover, */
+.displayWindow2 {
+  position: relative;
+  margin: 1%;
+  padding-left: 5px;
+  display: flex;
+  font-size: 17px;
+  /* background-color: rgb(206, 202, 206); */
+  color: black;
+  width: 27vw;
+  align-items: flex-start;
+  text-align: start;
+}
+
+textarea {
+  font-size: 15px;
+  resize: none;
+}
+textarea::-webkit-input-placeholder {
+  text-align: center;
+  line-height: 560px;
 }

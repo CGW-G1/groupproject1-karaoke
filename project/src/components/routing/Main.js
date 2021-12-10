@@ -3,27 +3,38 @@ import {
     BrowserRouter as Router,
     Routes,
     Route,
-    Link
+    Link,
 } from "react-router-dom";
 import SearchScreen from "../SearchScreen";
 import AboutUs from "./AboutUs";
+import ContactUs from "./ContactUs";
+import "./styles/Main.css";
 
 const Main = () => {
-    return(
+    return (
         <Router>
-            <div className="router-container">
-                <div className = "router-menu">
-                    <h1>
-                        <Link to="/">The Karaoke Website</Link>
-                    </h1>
-                    <div>
-                        <AboutUs/>
+            <div id="wholebody" className="night">
+                <div className="nav-container">
+                    <div className="main-header">
+                        <Link to="/"><h1>The Karaoke Website</h1></Link>
+                    </div>
+                    <div className="menu">
+                        <div className="menu-items">
+                            <Link to="/about-us"><h2>About Us</h2></Link>
+                        </div>
+                        <div className="menu-items">
+                            <Link to="/contact-us"><h2>Contact Us</h2></Link>
+                        </div>
                     </div>
                 </div>
-                <div className = "content">
+                {/* <div className="content"> */}
+                <div>
                     <Routes>
-                        <Route path ="/">
-                            <SearchScreen/>
+                        <Route path="/about-us" element={<AboutUs />}>
+                        </Route>
+                        <Route path="/contact-us" element={<ContactUs />}>
+                        </Route>
+                        <Route path="/" element={<SearchScreen />}>
                         </Route>
                     </Routes>
                 </div>
@@ -31,5 +42,6 @@ const Main = () => {
         </Router>
     );
 }
+
 
 export default Main;
